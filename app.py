@@ -39,9 +39,17 @@ def regresion_lineal():
     st.write(Y_new)
 
 
-op = st.multiselect('Escoja una opción', ['Regresion Lineal'])
-st.write(op)
+op = st.multiselect('Escoja una opción', ['Regresion Lineal', 'Regresion Polinomial', 'Clasificador Gausiano',
+                    'Clasificador de arboles de desicion', 'Redes neuronales'])
 
 if len(op) > 0:
     if op[0] == 'Regresion Lineal':
         regresion_lineal()
+    elif op[1] == 'Regresion Polinomial':
+        st.write('Selecciono regresion polinomial')
+    elif op[2] == 'Clasificador Gausiano':
+        st.write('Selecciono Clasificador Gausiano')
+    elif op[3] == 'Clasificador de arboles de desicion':
+        st.write('Selecciono Arboles de desición')
+    elif op[4] == 'Redes neuronales':
+        st.write('Selecciono redes neuronales')
