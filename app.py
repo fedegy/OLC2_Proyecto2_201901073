@@ -1,5 +1,9 @@
+from sklearn.linear_model import LinearRegression
+from matplotlib import pyplot as plt
+from sklearn.metrics import mean_squared_error, r2_score
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 EXTENSION = st.radio(
     "Escoja la extensión del archivo",
@@ -11,4 +15,33 @@ if uploaded_file is not None:
     if EXTENSION == 'CSV':
         dataframe = pd.read_csv(uploaded_file)
         st.write(dataframe)
-        
+
+
+def regresion_lineal():
+    columna = st.selectbox('Seleccione X', (dataframe.columns))
+    columna2 = st.selectbox('Seleccione dato de columna', (dataframe.columns))
+    X = np.asarray(dataframe[columna]).reshape(-1, 1)
+    Y = dataframe[columna2]
+
+    linear_regression = LinearRegression()
+    linear_regression.fit(X, Y)
+    Y_pred = linear_regression.predict(X)
+
+    st.write("Error medio: ", mean_squared_error(Y, Y_pred, squared=True))
+    st.write("Coef: ", linear_regression.coef_)
+    st.write("R2: ", r2_score(Y, Y_pred))
+
+    plt.scatter(X, Y)
+    plt.plot(X, Y_pred, color='red')
+    plt.show()
+    val_prediccion = st.number_input('Ingrese valor')
+    Y_new = linear_regression.predict([[val_prediccion]])
+    st.write(Y_new)
+
+
+op = st.multiselect('Escoja una opción', ['Regresion Lineal'])
+st.write(op)
+
+if len(op) > 0:
+    if op[0] == 'Regresion Lineal':
+        regresion_lineal()
