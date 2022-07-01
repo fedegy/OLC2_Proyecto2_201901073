@@ -45,11 +45,11 @@ op = st.multiselect('Escoja una opción', ['Regresion Lineal', 'Regresion Polino
 if len(op) > 0:
     if op[0] == 'Regresion Lineal':
         regresion_lineal()
-    elif op[1] == 'Regresion Polinomial':
+    elif op[0] == 'Regresion Polinomial':
         st.write('Selecciono regresion polinomial')
-    elif op[2] == 'Clasificador Gausiano':
+    elif op[0] == 'Clasificador Gausiano':
         st.write('Selecciono Clasificador Gausiano')
-    elif op[3] == 'Clasificador de arboles de desicion':
+    elif op[0] == 'Clasificador de arboles de desicion':
         st.write('Selecciono Arboles de desición')
-    elif op[4] == 'Redes neuronales':
+    elif op[0] == 'Redes neuronales':
         st.write('Selecciono redes neuronales')
