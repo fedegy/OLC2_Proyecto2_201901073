@@ -15,6 +15,16 @@ if uploaded_file is not None:
     if EXTENSION == 'CSV':
         dataframe = pd.read_csv(uploaded_file)
         st.write(dataframe)
+    elif EXTENSION == 'XLS':
+        dataframe = pd.read_excel(uploaded_file)
+        dataframe.to_csv('Convert.csv')
+        dataframe = pd.read_csv('Convert.csv')
+        st.write(dataframe)
+    elif EXTENSION == 'JSON':
+        dataframe = pd.read_json(uploaded_file)
+        dataframe.to_csv('Convert.csv')
+        dataframe = pd.read_csv('Convert.csv')
+        st.write(dataframe)
 
 
 def regresion_lineal():
