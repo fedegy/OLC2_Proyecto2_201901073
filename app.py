@@ -5,6 +5,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+st.write("# Machine Learning 201901073")
+
 EXTENSION = st.radio(
     "Escoja la extensión del archivo",
     ('CSV', 'XLS', 'JSON'))
@@ -36,7 +38,8 @@ def regresion_lineal():
     linear_regression = LinearRegression()
     linear_regression.fit(X, Y)
     Y_pred = linear_regression.predict(X)
-
+    
+    st.write(Y_pred)
     st.write("Error medio: ", mean_squared_error(Y, Y_pred, squared=True))
     st.write("Coef: ", linear_regression.coef_)
     st.write("R2: ", r2_score(Y, Y_pred))
@@ -44,6 +47,8 @@ def regresion_lineal():
     plt.scatter(X, Y)
     plt.plot(X, Y_pred, color='red')
     plt.show()
+    st.pyplot()
+
     val_prediccion = st.number_input('Ingrese valor')
     Y_new = linear_regression.predict([[val_prediccion]])
     st.write(Y_new)
