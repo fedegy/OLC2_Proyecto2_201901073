@@ -7,6 +7,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 import numpy as np
 
+st.set_page_config(
+    page_title="Machine Learning 201901073"
+)
+
 hiden_menu_style = """
     <style>
     #MainMenu {visibility: hidden; }
@@ -34,7 +38,7 @@ st.write("# Machine Learning 201901073")
 flag = False
 extension_archivo = st.radio(
     "Escoja la extensión del archivo",
-    ('CSV', 'XLS', 'JSON'))
+    ('CSV', 'XLS', 'XLSX', 'JSON'))
 uploaded_file = st.file_uploader("Escoja un archivo")
 if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
@@ -49,6 +53,11 @@ if uploaded_file is not None:
         dataframe = pd.read_csv('Convert.csv')
         st.write(dataframe)
         flag = True
+    elif extension_archivo == 'XLSX':
+        dataframe = pd.read_excel(uploaded_file)
+        dataframe.to_csv('Convert.csv')
+        dataframe = pd.read_csv('Convert.csv')
+        st.write(dataframe)
     elif extension_archivo == 'JSON':
         dataframe = pd.read_json(uploaded_file)
         dataframe.to_csv('Convert.csv')
@@ -92,7 +101,7 @@ if flag:
     if selected == "Regresion Lineal":
         st.title(f'Regresión Lineal')
         regresion_lineal()
-    if selected == "Regresión Polinomial":
+    if selected == "Regresion Polinomial":
         st.title(f'Regresión Polinomial')
         st.write("Regresion Polinomial")
     if selected == "Clasificador Gausiano":
