@@ -87,12 +87,14 @@ def regresion_lineal():
     Y_new = linear_regression.predict([[val_prediccion]])
     st.write("Predicción: " + str(Y_new))
 
-def regresion_polinomial():
-    columna = st.number_input('Ingrese X', value=0)
-    columna2 = st.number_input('Ingrese Y', value=0)
 
-    X = dataframe.iloc[:, int(columna)].values.reshape(-1, 1)
-    Y = dataframe.iloc[:, int(columna2)].values.reshape(-1, 1)
+def regresion_polinomial():
+    dtf = dataframe.columns.to_list()
+    index1 = st.selectbox("Seleccione X", range(len(dtf)), format_func=lambda x: dtf[x])
+    index2 = st.selectbox("Seleccione Y", range(len(dtf)), format_func=lambda x: dtf[x])
+
+    X = dataframe.iloc[:, int(index1)].values.reshape(-1, 1)
+    Y = dataframe.iloc[:, int(index2)].values.reshape(-1, 1)
 
     grado = st.number_input('Ingrese grado', value=0)
     poly = PolynomialFeatures(degree=int(grado))
