@@ -46,24 +46,19 @@ if uploaded_file is not None:
 
     if extension_archivo == 'CSV':
         dataframe = pd.read_csv(uploaded_file)
-        st.write(dataframe)
+        st.dataframe(dataframe)
         flag = True
     elif extension_archivo == 'XLS':
         dataframe = pd.read_excel(uploaded_file)
-        dataframe.to_csv('Convert.csv')
-        dataframe = pd.read_csv('Convert.csv')
-        st.write(dataframe)
+        st.dataframe(dataframe)
         flag = True
     elif extension_archivo == 'XLSX':
         dataframe = pd.read_excel(uploaded_file)
-        dataframe.to_csv('Convert.csv')
-        dataframe = pd.read_csv('Convert.csv')
-        st.write(dataframe)
+        st.dataframe(dataframe)
+        flag = True
     elif extension_archivo == 'JSON':
         dataframe = pd.read_json(uploaded_file)
-        dataframe.to_csv('Convert.csv')
-        dataframe = pd.read_csv('Convert.csv')
-        st.write(dataframe)
+        st.dataframe(dataframe)
         flag = True
 
 def regresion_lineal():
@@ -120,10 +115,10 @@ def regresion_polinomial():
 
 selected = option_menu(
     menu_title="Menú",
-    options=["Regresion Lineal", "Regresion Polinomial", "Clasificador Gausiano", 
+    options=["Escoja una opción", "Regresion Lineal", "Regresion Polinomial", "Clasificador Gausiano", 
     "Clasificador de arboles de desicion", "Redes neuronales"],
-    icons=['bar-chart', 'graph-down', 'graph-up-arrow', 'graph-up', 'graph-down-arrow'], 
-    menu_icon="clipboard-data", default_index=1,
+    icons=['list', 'bar-chart', 'graph-down', 'graph-up-arrow', 'graph-up', 'graph-down-arrow'], 
+    menu_icon="clipboard-data", default_index=0,
     orientation="horizontal",
     
 )
