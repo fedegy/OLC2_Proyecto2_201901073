@@ -1,3 +1,4 @@
+from sklearn.preprocessing import PolynomialFeatures
 import streamlit as st
 from streamlit_option_menu import option_menu
 from distutils import extension
@@ -37,9 +38,9 @@ st.write("# Machine Learning 201901073")
 
 flag = False
 extension_archivo = st.radio(
-    "Escoja la extensión del archivo",
+    "Seleccione el tipo de archivo",
     ('CSV', 'XLS', 'XLSX', 'JSON'))
-uploaded_file = st.file_uploader("Escoja un archivo")
+uploaded_file = st.file_uploader("Cargar archivo")
 if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
 
@@ -77,7 +78,7 @@ def regresion_lineal():
     
     st.write(Y_pred)
     st.write("Error medio: ", mean_squared_error(Y, Y_pred, squared=True))
-    st.write("Coeficiente: ", linear_regression.coef_)
+    st.write("Coeficiente: " + str(linear_regression.coef_))
     st.write("R2: ", r2_score(Y, Y_pred))
 
     plt.scatter(X, Y)
@@ -87,14 +88,44 @@ def regresion_lineal():
 
     val_prediccion = st.number_input('Ingrese valor')
     Y_new = linear_regression.predict([[val_prediccion]])
-    st.write(Y_new)
+    st.write("Predicción: " + str(Y_new))
+
+def regresion_polinomial():
+    columna = st.selectbox('Seleccione X', (dataframe.columns))
+    columna2 = st.selectbox('Seleccione Y', (dataframe.columns))
+
+    X = dataframe.iloc[:, columna].values.reshape(-1, 1)
+    Y = dataframe.iloc[:, columna2].values.reshape(-1, 1)
+
+    grado = st.number_input('Ingrese grado')
+    poly = PolynomialFeatures(degree=grado)
+    X = poly.fit_transform(X)
+    Y = poly.fit_transform(Y)
+
+    linear_regression = LinearRegression()
+    linear_regression.fit(X, Y)
+    Y_pred = linear_regression.predic(X)
+    st.write(Y_pred)
+    st.write("Error medio: ", str(mean_squared_error(Y, Y_pred, squared=False)))
+    st.write("R2: ", r2_score(Y, Y_pred))
+
+    plt.scatter(X, Y)
+    plt.plot(X, Y_pred, color = 'red')
+    plt.show()
+    st.pyplot()
+
+    Y_new = linear_regression.predict(poly.fit_transform([[50]]))
+    st.write("Predicción: ", Y_new)
 
 
 selected = option_menu(
     menu_title="Menú",
     options=["Regresion Lineal", "Regresion Polinomial", "Clasificador Gausiano", 
     "Clasificador de arboles de desicion", "Redes neuronales"],
+    icons=['bar-chart', 'graph-down', 'graph-up-arrow', 'graph-up', 'graph-down-arrow'], 
+    menu_icon="clipboard-data", default_index=1,
     orientation="horizontal",
+    
 )
 
 if flag:
@@ -103,7 +134,7 @@ if flag:
         regresion_lineal()
     if selected == "Regresion Polinomial":
         st.title(f'Regresión Polinomial')
-        st.write("Regresion Polinomial")
+        regresion_polinomial()
     if selected == "Clasificador Gausiano":
         st.title(f'Clasificador Gausiano')
         st.write("Clasificador Gausiano")
