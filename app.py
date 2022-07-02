@@ -76,40 +76,44 @@ def regresion_lineal():
     st.write("Coeficiente: " + str(linear_regression.coef_))
     st.write("R2: ", r2_score(Y, Y_pred))
 
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
     plt.scatter(X, Y)
     plt.plot(X, Y_pred, color='red')
     plt.show()
     st.pyplot()
 
-    val_prediccion = st.number_input('Ingrese valor')
+    val_prediccion = st.number_input('Ingrese valor', value=0)
     Y_new = linear_regression.predict([[val_prediccion]])
     st.write("Predicción: " + str(Y_new))
 
 def regresion_polinomial():
-    columna = st.selectbox('Seleccione X', (dataframe.columns))
-    columna2 = st.selectbox('Seleccione Y', (dataframe.columns))
+    columna = st.number_input('Ingrese X', value=0)
+    columna2 = st.number_input('Ingrese Y', value=0)
 
-    X = dataframe.iloc[:, columna].values.reshape(-1, 1)
-    Y = dataframe.iloc[:, columna2].values.reshape(-1, 1)
+    X = dataframe.iloc[:, int(columna)].values.reshape(-1, 1)
+    Y = dataframe.iloc[:, int(columna2)].values.reshape(-1, 1)
 
-    grado = st.number_input('Ingrese grado')
-    poly = PolynomialFeatures(degree=grado)
+    grado = st.number_input('Ingrese grado', value=0)
+    poly = PolynomialFeatures(degree=int(grado))
     X = poly.fit_transform(X)
     Y = poly.fit_transform(Y)
 
     linear_regression = LinearRegression()
     linear_regression.fit(X, Y)
-    Y_pred = linear_regression.predic(X)
+    Y_pred = linear_regression.predict(X)
     st.write(Y_pred)
     st.write("Error medio: ", str(mean_squared_error(Y, Y_pred, squared=False)))
     st.write("R2: ", r2_score(Y, Y_pred))
 
+    st.set_option('deprecation.showPyplotGlobalUse', False)
     plt.scatter(X, Y)
     plt.plot(X, Y_pred, color = 'red')
     plt.show()
     st.pyplot()
 
-    Y_new = linear_regression.predict(poly.fit_transform([[50]]))
+    val_prediccion = st.number_input('Ingrese valor a predecir', value=0)
+    Y_new = linear_regression.predict(poly.fit_transform([[val_prediccion]]))
     st.write("Predicción: ", Y_new)
 
 
@@ -120,7 +124,6 @@ selected = option_menu(
     icons=['list', 'bar-chart', 'graph-down', 'graph-up-arrow', 'graph-up', 'graph-down-arrow'], 
     menu_icon="clipboard-data", default_index=0,
     orientation="horizontal",
-    
 )
 
 if flag:
