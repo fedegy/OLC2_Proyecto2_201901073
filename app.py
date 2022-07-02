@@ -1,37 +1,64 @@
+import streamlit as st
+from streamlit_option_menu import option_menu
+from distutils import extension
 from sklearn.linear_model import LinearRegression
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
-import streamlit as st
 import pandas as pd
 import numpy as np
 
+hiden_menu_style = """
+    <style>
+    #MainMenu {visibility: hidden; }
+    footer {visibility: hidden; }
+    </style>
+"""
+st.markdown(hiden_menu_style, unsafe_allow_html=True)
+
+st.markdown(
+    """
+<style>
+span[data-baseweb="tag"] {
+  background-color: blue !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
+
+st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
+
 st.write("# Machine Learning 201901073")
 
-EXTENSION = st.radio(
+flag = False
+extension_archivo = st.radio(
     "Escoja la extensión del archivo",
     ('CSV', 'XLS', 'JSON'))
 uploaded_file = st.file_uploader("Escoja un archivo")
 if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
 
-    if EXTENSION == 'CSV':
+    if extension_archivo == 'CSV':
         dataframe = pd.read_csv(uploaded_file)
         st.write(dataframe)
-    elif EXTENSION == 'XLS':
+        flag = True
+    elif extension_archivo == 'XLS':
         dataframe = pd.read_excel(uploaded_file)
         dataframe.to_csv('Convert.csv')
         dataframe = pd.read_csv('Convert.csv')
         st.write(dataframe)
-    elif EXTENSION == 'JSON':
+        flag = True
+    elif extension_archivo == 'JSON':
         dataframe = pd.read_json(uploaded_file)
         dataframe.to_csv('Convert.csv')
         dataframe = pd.read_csv('Convert.csv')
         st.write(dataframe)
-
+        flag = True
 
 def regresion_lineal():
     columna = st.selectbox('Seleccione X', (dataframe.columns))
-    columna2 = st.selectbox('Seleccione dato de columna', (dataframe.columns))
+    columna2 = st.selectbox('Seleccione Y', (dataframe.columns))
     X = np.asarray(dataframe[columna]).reshape(-1, 1)
     Y = dataframe[columna2]
 
@@ -41,7 +68,7 @@ def regresion_lineal():
     
     st.write(Y_pred)
     st.write("Error medio: ", mean_squared_error(Y, Y_pred, squared=True))
-    st.write("Coef: ", linear_regression.coef_)
+    st.write("Coeficiente: ", linear_regression.coef_)
     st.write("R2: ", r2_score(Y, Y_pred))
 
     plt.scatter(X, Y)
@@ -54,17 +81,28 @@ def regresion_lineal():
     st.write(Y_new)
 
 
-op = st.multiselect('Escoja una opción', ['Regresion Lineal', 'Regresion Polinomial', 'Clasificador Gausiano',
-                    'Clasificador de arboles de desicion', 'Redes neuronales'])
+selected = option_menu(
+    menu_title="Menú",
+    options=["Regresion Lineal", "Regresion Polinomial", "Clasificador Gausiano", 
+    "Clasificador de arboles de desicion", "Redes neuronales"],
+    orientation="horizontal",
+)
 
-if len(op) > 0:
-    if op[0] == 'Regresion Lineal':
+if flag:
+    if selected == "Regresion Lineal":
+        st.title(f'Regresión Lineal')
         regresion_lineal()
-    elif op[0] == 'Regresion Polinomial':
-        st.write('Selecciono regresion polinomial')
-    elif op[0] == 'Clasificador Gausiano':
-        st.write('Selecciono Clasificador Gausiano')
-    elif op[0] == 'Clasificador de arboles de desicion':
-        st.write('Selecciono Arboles de desición')
-    elif op[0] == 'Redes neuronales':
-        st.write('Selecciono redes neuronales')
+    if selected == "Regresión Polinomial":
+        st.title(f'Regresión Polinomial')
+        st.write("Regresion Polinomial")
+    if selected == "Clasificador Gausiano":
+        st.title(f'Clasificador Gausiano')
+        st.write("Clasificador Gausiano")
+    if selected == "Clasificador de arboles de desicion":
+        st.title(f'Clasificador de arboles de desicion')
+        st.write("Clasificador de arboles de desicion")
+    if selected == "Redes neuronales":
+        st.title(f'Redes neuronales')
+        st.write("Redes neuronales")
+else:
+    st.write("No se ha cargado ningún archivo (CSV, XLS, XLSX, JSON)")
