@@ -7,6 +7,7 @@ from distutils import extension
 from sklearn.linear_model import LinearRegression
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 import pandas as pd
 import numpy as np
 
@@ -47,7 +48,7 @@ if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
 
     if extension_archivo == 'CSV':
-        dataframe = pd.read_csv(uploaded_file, header=None)
+        dataframe = pd.read_csv(uploaded_file)
         st.dataframe(dataframe)
         flag = True
     elif extension_archivo == 'XLS':
@@ -147,6 +148,25 @@ def clasificador_gauseano():
         predicted = model.predict([entrada])
         st.write("Predicción: ", predicted)
 
+def arboles_desicion():
+    dataframe.columns = range(dataframe.shape[1])
+    X = np.array(dataframe)
+    index = X.shape[1]
+    X = np.delete(X, int(index) - 1, axis=1)
+
+    P = np.array(dataframe)
+    P = P.T[int(index) - 1]
+    lista = []
+    for i in range(1, len(X.T.tolist())):
+        lista.append(dataframe.iloc[:, int(i)].values)
+    features = list(zip(*lista))
+
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    clf = DecisionTreeClassifier().fit(features, P)
+    plot_tree(clf, filled=True)
+    plt.show()
+    st.pyplot()
+
 
 selected = option_menu(
     menu_title="Menú",
@@ -165,11 +185,11 @@ if flag:
         st.title(f'Regresión Polinomial')
         regresion_polinomial()
     if selected == "Clasificador Gausiano":
+        st.title(f'Clasificador Gausiano')
         clasificador_gauseano()
-        st.write("Clasificador Gausiano")
     if selected == "Clasificador de arboles de desicion":
         st.title(f'Clasificador de arboles de desicion')
-        st.write("Clasificador de arboles de desicion")
+        arboles_desicion()
     if selected == "Redes neuronales":
         st.title(f'Redes neuronales')
         st.write("Redes neuronales")
