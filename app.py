@@ -1,9 +1,10 @@
-from pyexpat import features
+from pyparsing import col
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import PolynomialFeatures
 import streamlit as st
 from streamlit_option_menu import option_menu
-from distutils import extension
 from sklearn.linear_model import LinearRegression
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
@@ -140,9 +141,7 @@ def clasificador_gauseano():
     model = GaussianNB()
     model.fit(features, lista_play)
     val = st.text_input('Ingrese entrada: ')
-    if val == "":
-        val = ""
-    else:
+    if val != "":
         cadena = val.split(',')
         entrada = [int(x) for x in cadena]
         predicted = model.predict([entrada])
@@ -159,6 +158,7 @@ def arboles_desicion():
     lista = []
     for i in range(1, len(X.T.tolist())):
         lista.append(dataframe.iloc[:, int(i)].values)
+    print(lista)
     features = list(zip(*lista))
 
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -166,6 +166,23 @@ def arboles_desicion():
     plot_tree(clf, filled=True)
     plt.show()
     st.pyplot()
+
+def redes_neuronales():
+    columna = st.selectbox('Seleccione X', (dataframe.columns), index=0)
+    columna2 = st.selectbox('Seleccione Y', (dataframe.columns), index=1)
+    prediccion = st.number_input('Ingrese valor a predecir: ', value=0)
+    columnax = dataframe[columna]
+    columnay = dataframe[columna2]
+    X = columnax[:, np.newaxis]
+    r = 0
+    X_train, X_test, Y_train, Y_test = train_test_split(X, columnay)
+    mlppreg = MLPRegressor(solver='lbfgs', alpha=1e-3, hidden_layer_sizes=(3,3), random_state=1)
+    mlppreg.fit(X_train, Y_train)
+    r = mlppreg.score(X_train, Y_train)
+    dato = np.array(int(prediccion)).reshape(-1, 1)
+    data = mlppreg.predict(dato)
+    st.write('Predicción: ', str(data))
+    st.write(r, " %")
 
 
 selected = option_menu(
@@ -192,6 +209,6 @@ if flag:
         arboles_desicion()
     if selected == "Redes neuronales":
         st.title(f'Redes neuronales')
-        st.write("Redes neuronales")
+        redes_neuronales()
 else:
     st.write("No se ha cargado ningún archivo (CSV, XLS, XLSX, JSON)")
